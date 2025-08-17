@@ -43,3 +43,60 @@ public:
     SearchResult(int id, double s, const string& t, const string& snip, const string& u = "")
         : documentId(id), score(s), title(t), snippet(snip), url(u) {}
 };
+
+/**
+ * MiniSearchEngine: Full-featured search engine implementation
+ * 
+ * Key Features:
+ * - Inverted index for O(1) term lookups
+ * - TF-IDF scoring algorithm for relevance ranking
+ * - Smart text preprocessing and tokenization
+ * - Context-aware snippet generation
+ * - Batch document loading from files
+ */
+class MiniSearchEngine {
+private:
+    vector<Document> documents;
+    
+    // Inverted index: term -> set of document IDs containing the term
+    unordered_map<string, unordered_set<int>> invertedIndex;
+    
+    // Term frequency: document_id -> (term -> frequency count)
+    unordered_map<int, unordered_map<string, int>> termFrequency;
+    
+    // Document frequency: term -> number of documents containing it
+    unordered_map<string, int> documentFrequency;
+    
+    /**
+     * Text preprocessing: normalizes text for consistent indexing
+     * Converts to lowercase and handles punctuation
+     */
+    string preprocessText(const string& text) {
+        string result;
+        for (char c : text) {
+            if (isalnum(c) || isspace(c)) {
+                result += tolower(c);
+            } else {
+                result += ' ';
+            }
+        }
+        return result;
+    }
+    
+    /**
+     * Tokenization: extracts meaningful terms from text
+     * Filters out short words that typically don't add search value
+     */
+    vector<string> tokenize(const string& text) {
+        vector<string> tokens;
+        istringstream iss(preprocessText(text));
+        string word;
+        
+        while (iss >> word) {
+            if (word.length() > 2) {
+                tokens.push_back(word);
+            }
+        }
+        return tokens;
+    }
+};
