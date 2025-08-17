@@ -148,4 +148,22 @@ public:
             documentFrequency[term]++;
         }
     }
+
+/**
+     * Execute search query and return ranked results
+     * Uses TF-IDF scoring with result sorting by relevance
+*/
+    vector<SearchResult> search(const string& query, int maxResults = 10) {
+        vector<string> queryTerms = tokenize(query);
+        unordered_map<int, double> scores;
+        
+        // Calculate relevance scores for matching documents
+        for (const string& term : queryTerms) {
+            unordered_map<string, unordered_set<int>>::iterator indexIter = invertedIndex.find(term);
+            if (indexIter != invertedIndex.end()) {
+                for (int docId : indexIter->second) {
+                    scores[docId] += calculateTFIDF(term, docId);
+                }
+            }
+        }
 };
