@@ -1,2 +1,11 @@
-# cpp-mini-search-engine
-🔍 A lightweight educational search engine in C++ demonstrating TF-IDF scoring, inverted indexing, and information retrieval fundamentals. Perfect for learning search algorithms and text processing concepts.
+# Mini Search Engine C++
+
+🔍 A lightweight educational search engine implementation demonstrating TF-IDF scoring and inverted indexing.
+
+## Features (Coming Soon)
+- [ ] Document indexing
+- [ ] TF-IDF scoring
+- [ ] Search functionality
+- [ ] Interactive interface
+
+## Getting Started
