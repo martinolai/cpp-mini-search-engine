@@ -195,4 +195,56 @@ public:
                 }
             }
         }
+        // Convert to result objects with snippets
+        vector<SearchResult> results;
+        for (const pair<const int, double>& scorePair : scores) {
+            int docId = scorePair.first;
+            double score = scorePair.second;
+            const Document& doc = documents[docId];
+            
+            string snippet = generateSnippet(doc, queryTerms);
+            results.emplace_back(docId, score, doc.title, snippet, doc.url);
+        }
+        
+        // Sort by relevance score (highest first)
+        sort(results.begin(), results.end(), 
+             [](const SearchResult& a, const SearchResult& b) {
+                 return a.score > b.score;
+             });
+        
+        // Limit number of results
+        if (results.size() > static_cast<size_t>(maxResults)) {
+            results.resize(maxResults);
+        }
+        
+        return results;
+    }
+    
+    /**
+     * Display formatted search results to console
+     */
+    void printResults(const vector<SearchResult>& results, const string& query) {
+        cout << "\n=== Results for: \"" << query << "\" ===" << endl;
+        cout << "Found " << results.size() << " results\n" << endl;
+        
+        for (size_t i = 0; i < results.size(); ++i) {
+            const SearchResult& result = results[i];
+            cout << "[" << (i + 1) << "] " << result.title << endl;
+            if (!result.url.empty()) {
+                cout << "    URL: " << result.url << endl;
+            }
+            cout << "    " << result.snippet << endl;
+            cout << "    Score: " << fixed << setprecision(3) 
+                 << result.score << endl << endl;
+        }
+    }
+/**
+     * Display search engine statistics
+ */
+    void printStats() {
+        cout << "\n=== Search Engine Statistics ===" << endl;
+        cout << "Indexed documents: " << documents.size() << endl;
+        cout << "Unique terms: " << invertedIndex.size() << endl;
+        cout << "================================" << endl;
+    }
 };
