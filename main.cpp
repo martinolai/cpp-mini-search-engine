@@ -99,4 +99,35 @@ private:
         }
         return tokens;
     }
+public:
+    /**
+     * Index a new document for searching
+     * Builds inverted index and calculates term frequencies
+     * Titles receive double weight for improved relevance
+     */
+    void addDocument(const string& title, const string& content, const string& url = "") {
+        int docId = static_cast<int>(documents.size());
+        documents.emplace_back(docId, title, content, url);
+        
+        vector<string> titleTokens = tokenize(title);
+        vector<string> contentTokens = tokenize(content);
+        
+        // Combine tokens with title weighting (titles are more important)
+        vector<string> allTokens = titleTokens;
+        allTokens.insert(allTokens.end(), titleTokens.begin(), titleTokens.end()); // Double weight
+        allTokens.insert(allTokens.end(), contentTokens.begin(), contentTokens.end());
+        
+        // Build search index structures
+        unordered_set<string> uniqueTerms;
+        for (const string& token : allTokens) {
+            invertedIndex[token].insert(docId);
+            termFrequency[docId][token]++;
+            uniqueTerms.insert(token);
+        }
+        
+        // Update document frequency for IDF calculation
+        for (const string& term : uniqueTerms) {
+            documentFrequency[term]++;
+        }
+    }
 };
