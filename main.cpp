@@ -99,7 +99,7 @@ private:
         }
         return tokens;
     }
-
+    
     /**
      * TF-IDF Calculation: industry-standard relevance scoring
      * Formula: TF(term, doc) * IDF(term) = frequency * log(total_docs / docs_with_term)
@@ -117,11 +117,11 @@ private:
         
         return tf * idf;
     }
-
-/**
+    
+    /**
      * Smart snippet generation with query context
      * Finds relevant content sections and creates preview text
-*/
+     */
     string generateSnippet(const Document& doc, const vector<string>& queryTerms) {
         string text = doc.content;
         string lowerText = preprocessText(text);
@@ -146,6 +146,7 @@ private:
         
         return snippet;
     }
+    
 public:
     /**
      * Index a new document for searching
@@ -177,11 +178,11 @@ public:
             documentFrequency[term]++;
         }
     }
-
-/**
+    
+    /**
      * Execute search query and return ranked results
      * Uses TF-IDF scoring with result sorting by relevance
-*/
+     */
     vector<SearchResult> search(const string& query, int maxResults = 10) {
         vector<string> queryTerms = tokenize(query);
         unordered_map<int, double> scores;
@@ -195,6 +196,7 @@ public:
                 }
             }
         }
+        
         // Convert to result objects with snippets
         vector<SearchResult> results;
         for (const pair<const int, double>& scorePair : scores) {
@@ -238,15 +240,11 @@ public:
                  << result.score << endl << endl;
         }
     }
-/**
-     * Display search engine statistics
- */
-    void printStats() {
-        cout << "\n=== Search Engine Statistics ===" << endl;
-        cout << "Indexed documents: " << documents.size() << endl;
-        cout << "Unique terms: " << invertedIndex.size() << endl;
-        cout << "================================" << endl;
-    }
+    
+    /**
+     * Batch load documents from text file
+     * Format: title|content|url (pipe-separated values)
+     */
     void loadFromFile(const string& filename) {
         ifstream file(filename);
         string line;
@@ -266,8 +264,17 @@ public:
         }
         file.close();
     }
+    
+    /**
+     * Display search engine statistics
+     */
+    void printStats() {
+        cout << "\n=== Search Engine Statistics ===" << endl;
+        cout << "Indexed documents: " << documents.size() << endl;
+        cout << "Unique terms: " << invertedIndex.size() << endl;
+        cout << "================================" << endl;
+    }
 };
-
 
 /**
  * Interactive search engine demo
