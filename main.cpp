@@ -247,4 +247,23 @@ public:
         cout << "Unique terms: " << invertedIndex.size() << endl;
         cout << "================================" << endl;
     }
+    void loadFromFile(const string& filename) {
+        ifstream file(filename);
+        string line;
+        
+        while (getline(file, line)) {
+            size_t pos1 = line.find('|');
+            if (pos1 == string::npos) continue;
+            
+            size_t pos2 = line.find('|', pos1 + 1);
+            string title = line.substr(0, pos1);
+            string content = (pos2 != string::npos) ? 
+                            line.substr(pos1 + 1, pos2 - pos1 - 1) : 
+                            line.substr(pos1 + 1);
+            string url = (pos2 != string::npos) ? line.substr(pos2 + 1) : "";
+            
+            addDocument(title, content, url);
+        }
+        file.close();
+    }
 };
