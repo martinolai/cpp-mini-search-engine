@@ -99,6 +99,24 @@ private:
         }
         return tokens;
     }
+
+    /**
+     * TF-IDF Calculation: industry-standard relevance scoring
+     * Formula: TF(term, doc) * IDF(term) = frequency * log(total_docs / docs_with_term)
+     * Higher scores indicate more relevant documents
+     */
+    double calculateTFIDF(const string& term, int docId) {
+        unordered_map<string, int>::iterator termIter = termFrequency[docId].find(term);
+        if (termIter == termFrequency[docId].end()) {
+            return 0.0;
+        }
+        
+        double tf = static_cast<double>(termFrequency[docId][term]);
+        double idf = log(static_cast<double>(documents.size()) / 
+                        static_cast<double>(documentFrequency[term]));
+        
+        return tf * idf;
+    }
 public:
     /**
      * Index a new document for searching
