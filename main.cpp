@@ -117,6 +117,35 @@ private:
         
         return tf * idf;
     }
+
+/**
+     * Smart snippet generation with query context
+     * Finds relevant content sections and creates preview text
+*/
+    string generateSnippet(const Document& doc, const vector<string>& queryTerms) {
+        string text = doc.content;
+        string lowerText = preprocessText(text);
+        
+        // Find first occurrence of any query term for context
+        size_t bestPos = 0;
+        for (const string& term : queryTerms) {
+            size_t pos = lowerText.find(term);
+            if (pos != string::npos) {
+                bestPos = pos;
+                break;
+            }
+        }
+        
+        // Extract 150-character window around the found term
+        size_t start = (bestPos > 75) ? bestPos - 75 : 0;
+        size_t length = min(static_cast<size_t>(150), text.length() - start);
+        
+        string snippet = text.substr(start, length);
+        if (start > 0) snippet = "..." + snippet;
+        if (start + length < text.length()) snippet += "...";
+        
+        return snippet;
+    }
 public:
     /**
      * Index a new document for searching
